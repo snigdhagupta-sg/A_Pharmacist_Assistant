@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        #chat-box { border: 1px solid #ccc; height: 400px; overflow-y: auto; padding: 10px; margin: 10px 0; }
+        .message { margin: 5px 0; }
+        .sender { font-weight: bold; color: #333; }
+        .timestamp { color: #666; font-size: 0.8em; }
+        #users-list { float: right; width: 200px; border-left: 1px solid #ccc; padding-left: 10px; }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Chat</h1>
+    <div>
+        <input type="text" id="name-input" placeholder="Enter your name">
+        <button onclick="setName()">Set Name</button>
+    </div>
+    
+    <div id="users-list">
+        <h3>Connected Users</h3>
+        <ul id="users"></ul>
+    </div>
+
+    <div id="chat-box"></div>
+    
+    <div>
+        <input type="text" id="message-input" placeholder="Type your message" style="width: 70%">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io.connect('http://' + document.location.hostname + ':' + location.port);
+        
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        socket.on('new_message', (data) => {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `
+                <span class="sender">${data.sender}:</span>
+                <span>${data.message}</span>
+                <span class="timestamp">${new Date(data.timestamp).toLocaleTimeString()}</span>
+            `;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        socket.on('user_joined', (username) => {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            messageDiv.textContent = `${username} joined the chat`;
+            chatBox.appendChild(messageDiv);
+        });
+
+        socket.on('user_left', (username) => {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            messageDiv.textContent = `${username} left the chat`;
+            chatBox.appendChild(messageDiv);
+        });
+
+        socket.on('user_list', (users) => {
+            const usersList = document.getElementById('users');
+            usersList.innerHTML = users.map(user => `<li>${user}</li>`).join('');
+        });
+
+        function setName() {
+            const nameInput = document.getElementById('name-input');
+            if (nameInput.value.trim()) {
+                socket.emit('set_user', { name: nameInput.value.trim() });
+                nameInput.disabled = true;
+                document.querySelector('button').disabled = true;
+            }
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            if (messageInput.value.trim()) {
+                socket.emit('send_message', messageInput.value.trim());
+                messageInput.value = '';
+            }
+        }
+
+        document.getElementById('message-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
