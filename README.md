@@ -1,7 +1,7 @@
-# Decentralized Clinic App
+# A Pharmacist Assistant
 
 ## Overview
-The Decentralized Clinic App is a Web3 platform designed to connect patients and doctors while ensuring privacy, security, and transparency through the power of blockchain technology. The app offers decentralized identity management, secure and immutable prescriptions, AI-powered doctor searches, and more, all facilitated using our custom *HTK token*. The goal is to revolutionize the healthcare space by offering trustless, transparent interactions between patients and healthcare professionals.
+The A Pharmacist Assistant is a Web3 platform designed to connect patients and doctors while ensuring privacy, security, and transparency through the power of blockchain technology. The app offers decentralized identity management, secure and immutable prescriptions, AI-powered doctor searches, and more, all facilitated using our custom *HTK token*. The goal is to revolutionize the healthcare space by offering trustless, transparent interactions between patients and healthcare professionals.
 
 - Traditional healthcare systems have long been plagued by a variety of critical issues, which not only hinder the efficiency of the system but also compromise the security and accessibility of patient care. Some of these challenges include:
 
